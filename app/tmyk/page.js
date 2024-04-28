@@ -1,25 +1,28 @@
 "use client"
 import Link from "next/link";
 import { MdFilterList } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateTMYKModal from "@/components/CreateTMYKModal";
 export default function TMYK() {
     const [showModal, setShowModal] = useState(false)
-    const games = [{
-        title: "Football",
-        author: "Fuzby",
-        created: "2 days ago",
-        plays: 20,
-        rating: 4.5
-    },{
-        title: "Bright Eyes Songs",
-        author: "Fuzby",
-        created: "2 days ago",
-        plays: 20,
-        rating: 4.5
-    },]
+    const [games, setGames] = useState(null)
+    const [showLoading, setShowLoading] = useState(true)
+
+    useEffect(() => {
+        fetchGames()
+    }, [])
+
     const handleShowModal = () => {
         setShowModal(true)
+    }
+    const fetchGames = () => {
+        fetch("/api/getGames/")
+            .then((res) => res.json())
+            .then((data) => {
+                setGames(data)
+                setShowLoading(false)
+            }
+        )
     }
     return (
       <main className="flex min-h-screen flex-col py-24 px-8 bg-yellow-400">
@@ -40,13 +43,14 @@ export default function TMYK() {
             <input className="text-black ml-4 p-3 rounded-lg" placeholder="Search"/>
         </div>
         <div className="text-black space-y-5">
-            {games.map((game, index) => (
-                <div className="p-4 rounded-xl bg-gray-100 shadow-xl" key={index}>
-                    <p className="text-4xl font-semibold">{game.title}</p>
-                    <p>{game.author}</p>
-                    <p>{game.created}</p>
-                    <p>{game.plays}</p>
-                    <p>{game.rating}</p>
+            {showLoading && <div>Loading</div>}
+            {!showLoading && games != null && games.map((game, index) => (
+                <div className="p-4 rounded-xl bg-gray-100 flex flex-row shadow-xl justify-between" key={index}>
+                    <div className="flex flex-col">
+                        <p className="text-4xl font-semibold">{game.game.name}</p>
+                        <p>{game.user.username}</p>
+                    </div>
+                    <Link className="mx-2 p-3 px-4 text-xl items-center flex uppercase rounded-lg text-black font-semibold shadow-md bg-green-500" href={`/tmyk/play/${game.game.id}`}>Play</Link>
                 </div>
             ))}
         </div>

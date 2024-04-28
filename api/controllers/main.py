@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware  # Import the CORS middleware
+import api.controllers.tmyk as tmyk
 from mangum import Mangum
 import uvicorn
 from database.config import engine, SessionLocal, Base
@@ -14,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.include_router(admin.router)
+app.include_router(tmyk.router)
 # app.include_router(user.router)
 # app.include_router(classes.router)
 

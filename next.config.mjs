@@ -1,4 +1,3 @@
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     rewrites: async () => {
@@ -14,5 +13,5 @@ const nextConfig = {
     },
   };
   
-  module.exports = nextConfig;
+export default nextConfig;
   
